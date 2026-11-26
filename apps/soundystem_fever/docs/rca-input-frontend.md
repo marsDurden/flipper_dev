@@ -9,6 +9,18 @@ Read [audio-levels.md](audio-levels.md) for the dB/dBu/dBV background and
 [../../../docs/gpio.md](../../../docs/gpio.md) for why this circuit exists at all — Flipper
 GPIO pins are 3.3 V, not 5 V tolerant, and line-level audio does not fit that range directly.
 
+## Breadboard layout
+
+![Suggested breadboard layout for the RCA input front end: an RCA jack feeds C1, R1 into Node A, then C2 into Node B, where R3/R4 set the 1.65 V bias, C3 filters it, a jumper bridges to a second column for R5 and the clamp diode, and the result heads to the Flipper's GPIO header.](images/rca-breadboard.svg)
+
+This is a suggested physical arrangement, generated from the same component values and
+connections as the list below — it's a layout reference, not a substitute for it. If the
+image and the connection list ever disagree, the connection list wins. Column numbers are
+arbitrary (any node could sit in a different column); what matters is which column each
+component's leads share within a column. Note also the GND-rail trace running near R3
+(3V3→Node B): it passes close to the GND rail without connecting to it — two separate rails,
+not a short, same as on a real breadboard.
+
 ## Topology
 
 ```
