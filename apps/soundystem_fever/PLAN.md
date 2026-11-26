@@ -49,10 +49,12 @@ is an open decision — see "Open questions" below.
 - **M1 — reference data finalized**: nominal/headroom numbers per device class (CD/CDJ,
   mixer channel, send, return, delay/echo, amp input) turned into the lookup table the
   "cascade check" feature will use. Builds on [docs/audio-levels.md](docs/audio-levels.md).
-- **M2 — front-end hardware**: breadboard the conditioning circuit (attenuator, AC-coupling
-  + bias, protection, optional envelope detector), pick connectors, and bench-verify it
+- **M2 — front-end hardware**: breadboard the conditioning circuit and bench-verify it
   against a known reference signal (signal generator or a calibrated source) before trusting
-  any reading from it.
+  any reading from it. Unbalanced RCA v1 is designed on paper — see
+  [docs/rca-input-frontend.md](docs/rca-input-frontend.md) — and still needs to be built and
+  measured; [docs/breadboard-test-guide.md](docs/breadboard-test-guide.md) is the bench-test
+  procedure to run before any wire from it touches the Flipper's GPIO header.
 - **M3 — ADC sampling + level math**: firmware reads the conditioned signal, computes
   RMS/peak over a sampling window, and converts the raw reading to dBu/dBV using the
   calibration from M2. Live meter screen (bar graph + numeric readout + peak hold + clip
@@ -68,22 +70,24 @@ is an open decision — see "Open questions" below.
 - **M7 — stretch**: basic frequency-domain checks (e.g. mains-hum detection at 50/60 Hz,
   simple tone presence via a Goertzel filter) — only once level metering is solid.
 
-## Open questions (need a decision before M2)
+## Decisions made
 
-- **Connectors**: unbalanced only (RCA/TS, simplest front end), or also balanced
-  (TRS/XLR send-return, which wants either a differential front end or a small transformer
-  to stay ground-loop-safe)?
-- **Detection method**: sample the raw conditioned waveform on the ADC and compute RMS/peak
-  in firmware (more accurate, needs enough sample rate and MCU headroom), or add an analog
-  rectifier/envelope-follower ahead of the ADC (simpler firmware, extra analog parts, slower
-  response)?
+- **Connectors**: unbalanced RCA first (v1) — see
+  [docs/rca-input-frontend.md](docs/rca-input-frontend.md). Balanced TRS/XLR handling
+  (send/return loops, pro gear) is deferred to a later front end rather than designed in now;
+  it needs either a differential input stage or a small transformer to stay ground-loop-safe,
+  which unbalanced RCA doesn't need.
+- **Detection method**: sample the conditioned waveform directly on the ADC and compute
+  RMS/peak in firmware, rather than an analog rectifier/envelope-follower stage. Keeps the
+  front end passive (no op-amp, no extra supply concerns) for v1.
+
+## Open questions (need a decision before M2 is built)
+
 - **Which header pin(s)**: the ADC-capable header pins need confirming against the official
   pinout and whichever ADC access the firmware SDK actually exposes to external apps before
   locking the front-end design to a specific pin (see the caveat in
-  [../../docs/gpio.md](../../docs/gpio.md)).
-- **Power for active front-end parts**: an op-amp-based buffer/rectifier would run off the
-  header's 3.3 V rail — worth confirming that's enough headroom for the op-amp chosen before
-  committing to a part.
+  [../../docs/gpio.md](../../docs/gpio.md)). `docs/rca-input-frontend.md` uses `PC0` as a
+  working label pending that confirmation.
 
 ## Status
 
