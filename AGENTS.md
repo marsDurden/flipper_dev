@@ -27,6 +27,9 @@ how its apps are expected to feel, and where the device pushes back.
 - [apps/soundystem_fever](apps/soundystem_fever/) — audio level analyzer (dBu/dBV/dBm) for
   gain-staging a cascade of line-level gear (CD/CDJ, mixer, send/return, delay/echo,
   amplifier input) via the GPIO header. See its own `README.md`/`PLAN.md` for status.
+- [apps/getup_bitch](apps/getup_bitch/) — multi-alarm clock with randomized escalating
+  pre-alarms and a math-problem dismissal gate. Must be left open in the foreground to ring;
+  see its own `README.md`/`PLAN.md` for status and that caveat in full.
 
 ## Working on an app here
 

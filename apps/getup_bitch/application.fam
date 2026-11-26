@@ -1,0 +1,13 @@
+App(
+    appid="getup_bitch",
+    name="Getup Bitch",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="getup_bitch_app",
+    stack_size=2 * 1024,
+    fap_category="Tools",
+    fap_version="0.1",
+    fap_author="Marco Piccoli",
+    fap_description="No-mercy multi-alarm clock: an escalating, randomized ladder of buzzes "
+    "leading up to each wake time, dismissed only by solving a math problem. Must be left "
+    "open in the foreground to ring - see README.",
+)
