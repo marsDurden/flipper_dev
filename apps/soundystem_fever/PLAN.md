@@ -91,6 +91,11 @@ is an open decision — see "Open questions" below.
 
 ## Status
 
-M0 only. Nothing beyond the skeleton has been built or bench-tested; `soundystem_fever.c`
-has not been compiled against a real SDK in this environment, so treat it as "written to the
-known-good minimal-app pattern" rather than "verified" until it's built with `ufbt` or `fbt`.
+Still M0 (UI scaffold), now reorganized into a modular, multi-page structure ahead of the
+real work in M1-M3 — see README.md's "Code layout" for the page/carousel architecture and
+where `lib/db_convert` (the reusable dBu/dBV conversion module) fits in. `db_convert` has
+been compiled and tested standalone with a plain C compiler against `docs/audio-levels.md`'s
+reference values; the Flipper-specific UI files have only been syntax-checked against
+hand-written stub headers, not built with `ufbt`/`fbt` against a real SDK in this
+environment — treat them as "written to known-good patterns," not "verified," until that
+build happens.
