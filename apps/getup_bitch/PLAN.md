@@ -20,6 +20,10 @@
   escalating duration, non-dismissible) and the final siren (continuous, screen forced on via
   `NotificationApp`'s backlight-enforce sequence), gated behind a "last digit of a×b" math
   problem to dismiss, with a 10-minute auto-stop safety net.
+- App icon: `getup_bitch.png`, a 10x10 1-bit bell glyph (`fap_icon` in `application.fam`). A
+  dolphin silhouette was tried first and came out unrecognizable at 10x10 once actually
+  rendered and looked at, so the icon is a plain bell; the dolphin mascot stays on the in-app
+  screens, where it has enough pixels to read.
 
 ## Not done / open questions
 
@@ -28,8 +32,6 @@
   on this to actually wake you up, at minimum: set an alarm a couple minutes out and confirm
   the pre-buzz ladder, the final siren, backlight-forced-on, and math dismissal all behave as
   expected; check behavior with the SD card removed; check two alarms close together.
-- No icon is set in `application.fam` (defaults to the firmware's generic FAP icon) - cosmetic,
-  not functional.
 - The siren is a simple two-tone alternation at the 1 Hz tick rate, not a richer waveform -
   effective but coarse; a faster tick (e.g. 250 ms) while ringing would make it punchier, at
   the cost of a bit more engine complexity (two tick rates instead of one).
