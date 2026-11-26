@@ -1,0 +1,11 @@
+App(
+    appid="soundystem_fever",
+    name="Soundystem Fever",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="soundystem_fever_app",
+    stack_size=2 * 1024,
+    fap_category="GPIO",
+    fap_version="0.1",
+    fap_author="Marco Piccoli",
+    fap_description="Audio level analyzer (dB/dBu/dBV/dBm) for matching line-level gear in a cascade, via the GPIO header.",
+)

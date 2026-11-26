@@ -22,6 +22,12 @@ how its apps are expected to feel, and where the device pushes back.
 - [docs/limitations.md](docs/limitations.md) — hard constraints (RAM, flash, single foreground
   app, RF/legal limits, no native networking) to design around rather than discover late.
 
+## Apps in this repo
+
+- [apps/soundystem_fever](apps/soundystem_fever/) — audio level analyzer (dBu/dBV/dBm) for
+  gain-staging a cascade of line-level gear (CD/CDJ, mixer, send/return, delay/echo,
+  amplifier input) via the GPIO header. See its own `README.md`/`PLAN.md` for status.
+
 ## Working on an app here
 
 - Target the official firmware's app SDK unless a task says otherwise. Community forks
