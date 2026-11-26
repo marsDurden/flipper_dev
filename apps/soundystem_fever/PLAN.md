@@ -93,9 +93,16 @@ is an open decision — see "Open questions" below.
 
 Still M0 (UI scaffold), now reorganized into a modular, multi-page structure ahead of the
 real work in M1-M3 — see README.md's "Code layout" for the page/carousel architecture and
-where `lib/db_convert` (the reusable dBu/dBV conversion module) fits in. `db_convert` has
-been compiled and tested standalone with a plain C compiler against `docs/audio-levels.md`'s
-reference values; the Flipper-specific UI files have only been syntax-checked against
-hand-written stub headers, not built with `ufbt`/`fbt` against a real SDK in this
-environment — treat them as "written to known-good patterns," not "verified," until that
-build happens.
+where `lib/db_convert` (the reusable dBu/dBV conversion module) fits in.
+
+This now **builds cleanly with `ufbt` against the real firmware SDK** (target 7, API 88.2),
+not just a stub-header syntax check - `ufbt` was installed and run in this environment, which
+also caught two real, non-obvious bugs no amount of reading could have: `lib/db_convert.c`
+needed to move to `lib/db_convert/db_convert.c` and be declared as a `fap_private_lib` in
+`application.fam` (the build system reserves top-level `lib/` for exactly that and silently
+drops loose files there), and `log10f`/`fabsf` turned out to be disabled in this firmware's
+exported libm (only `powf`/`roundf` are enabled) - `db_convert` now computes log10 by
+inverting `powf` via bisection instead. See README.md for both. `db_convert` is additionally
+compiled and tested standalone with a plain C compiler against `docs/audio-levels.md`'s
+reference values. Not yet run on real hardware - no physical Flipper is attached in this
+environment.

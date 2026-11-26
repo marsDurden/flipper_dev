@@ -1,6 +1,6 @@
 #include "page_measurement.h"
 #include "../soundystem_fever_app.h"
-#include "../lib/db_convert.h"
+#include "db_convert.h"
 
 #include <gui/canvas.h>
 #include <stdbool.h>
@@ -35,9 +35,12 @@ static void draw(Canvas* canvas, SoundystemApp* app) {
     canvas_draw_str(canvas, 2, SOUNDYSTEM_BODY_TOP + 19, "ADC sampling: see PLAN.md M3.");
     canvas_draw_str(canvas, 2, SOUNDYSTEM_BODY_TOP + 29, "Demo (fixed, not live):");
 
-    char dbu_str[12];
+    /* Sized for the compiler's worst-case int width, not the realistic one -
+       format_one_decimal's whole/frac are small in practice, but GCC's
+       -Wformat-truncation reasons about the full int range. */
+    char dbu_str[32];
     format_one_decimal(db_convert_volts_to_dbu(0.775f), dbu_str, sizeof(dbu_str));
-    char line[40];
+    char line[64];
     snprintf(line, sizeof(line), "0.775V -> %s dBu", dbu_str);
     canvas_draw_str(canvas, 2, SOUNDYSTEM_BODY_TOP + 39, line);
 }

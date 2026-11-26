@@ -11,9 +11,10 @@ input — by measuring levels in dBu/dBV/dBm-family units.
 - Repo-wide Flipper Zero background (hardware, firmware architecture, GPIO, limitations):
   [../../AGENTS.md](../../AGENTS.md)
 
-Current status: a UI skeleton with three carousel pages (Measurement, Audio Theory, About) and
-no real ADC sampling yet — see PLAN.md's milestones for what's next. **Do not wire audio
-directly into the GPIO header** — read the "Hard constraint" section in PLAN.md first.
+Current status: builds cleanly with `ufbt` against real firmware (target 7, API 88.2) as a
+three-page carousel (Measurement, Audio Theory, About); no real ADC sampling yet — see
+PLAN.md's milestones for what's next. **Do not wire audio directly into the GPIO header** —
+read the "Hard constraint" section in PLAN.md first.
 
 ## Code layout
 
@@ -26,11 +27,27 @@ pages/
   page_docs.c/.h         - "Audio Theory" page (condensed from docs/audio-levels.md)
   page_about.c/.h        - "About" page
 lib/
-  db_convert.c/.h        - pure dBu/dBV/volts/ADC-code conversions, no Flipper headers;
+  db_convert/
+    db_convert.c/.h      - pure dBu/dBV/volts/ADC-code conversions, no Flipper headers;
                            reusable from any page, and unit-testable with a plain C
                            compiler (see the commit history for the standalone test used
                            to verify it against docs/audio-levels.md's reference values)
 ```
+
+`lib/db_convert` is wired up as a `fap_private_lib` in `application.fam` (`Lib(name="db_convert", ...)`)
+rather than just being another source file: the build system reserves the top-level `lib/`
+directory for exactly this - a private-library source tree named `lib/<name>/`, built as its
+own static library and linked in. Don't drop loose `.c` files directly under `lib/`; they
+won't be picked up by the default app sources and won't be compiled.
+
+**A real, non-obvious constraint found by actually building this**: this firmware's exported
+libm is almost entirely disabled - `log10f`, `fabsf`, `sqrtf`, every `log`/`exp` variant, etc.
+are listed in the SDK's API table but not linked into the firmware, so calling them fails
+`ufbt`'s symbol-resolution check. Only `powf` and `roundf` are enabled. `db_convert.c` doesn't
+use `log10f`/`fabsf` for exactly this reason - its `db_log10f` computes log10 by numerically
+inverting `powf(10, y)` via bisection (cheap enough for a UI refresh, not meant for a hot
+sampling loop). If M3's RMS/peak math ever needs a square root, reach for `powf(x, 0.5f)`
+rather than `sqrtf` for the same reason.
 
 The app is a single `ViewPort` whose draw callback renders a shared title bar + page-dot
 indicator, then delegates to the current page's own `draw`. Left/Right cycle pages (with
@@ -41,7 +58,7 @@ wraparound — it's a carousel); Back exits; every other input goes to the curre
 interface in `pages/page.h` (a `draw`, and optionally `input`/`on_enter`), then add one line
 to the `pages` array in `soundystem_fever.c`. Nothing else changes.
 
-Not yet built with `ufbt`/`fbt` against a real SDK in this environment — the pure-C
-`lib/db_convert` module has been compiled and tested standalone (plain `gcc`), and the
-Flipper-specific files have been syntax-checked against hand-written stub headers matching
-the API calls they make, but neither is a substitute for a real firmware build.
+Built and passing `ufbt`'s API-symbol check (`soundystem_fever.fap`, target 7 / API 88.2).
+`lib/db_convert` is additionally compiled and tested standalone (plain `gcc`) against
+`docs/audio-levels.md`'s reference values. Not yet run on real hardware - no physical Flipper
+is attached in this environment, so flashing and on-device testing are still outstanding.

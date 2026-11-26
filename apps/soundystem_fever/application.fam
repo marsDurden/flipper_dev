@@ -8,4 +8,11 @@ App(
     fap_version="0.1",
     fap_author="Marco Piccoli",
     fap_description="Audio level analyzer (dB/dBu/dBV/dBm) for matching line-level gear in a cascade, via the GPIO header.",
+    fap_private_libs=[
+        Lib(
+            name="db_convert",
+            sources=["*.c"],
+            fap_include_paths=["."],
+        ),
+    ],
 )
